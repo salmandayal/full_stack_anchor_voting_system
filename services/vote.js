@@ -13,16 +13,17 @@ async function getAllTopic() {
 
   return [
     {
-      topic: "BTC",
-      options: {
-        name: "BTC",
-        count: 5,
-      },
-      topic: "ETH",
-      options: {
-        name: "ETH",
-        count: 5,
-      },
+      topic: "Trending Token",
+      options: [
+        {
+          name: "BTC",
+          count: 5,
+        },
+        {
+          name: "ETH",
+          count: 5,
+        },
+      ],
     },
   ];
 }

@@ -16,12 +16,14 @@ import { VoteSelection } from "./VoteSelection";
 export function VoteItem({
   voteName,
   voteOptions,
+  fetchVoteTopics,
 }: {
   voteName: string;
   voteOptions: Array<{
     name: string;
     count: number;
   }>;
+  fetchVoteTopics: () => Promise<void>;
 }) {
   return (
     <div className='mt-5'>
@@ -39,7 +41,11 @@ export function VoteItem({
             {voteOptions.map(option => (
               <TableCell>{option.count}</TableCell>
             ))}
-            <VoteSelection voteOptions={voteOptions} />
+            <VoteSelection
+              voteName={voteName}
+              fetchVoteTopics={fetchVoteTopics}
+              voteOptions={voteOptions}
+            />
           </TableRow>
         </TableBody>
         <TableFooter>

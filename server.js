@@ -2,20 +2,26 @@ const express = require("express");
 const app = express();
 const { validationResult } = require("express-validator");
 const path = require("path");
-const { getCount } = require("./services/vote");
+const {
+  getCount,
+  getAllTopic,
+  castVote,
+  createVoteTopic,
+} = require("./services/vote");
 const {
   validateCastVote,
   validateCreateVote,
 } = require("./validations/voteVS");
-const { create } = require("domain");
+const cors = require("cors");
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Welcome Opika Voting System");
 });
 
-app.get("/api/getAllTopic", async (req, res) => {
+app.get("/api/topics", async (req, res) => {
   const allTopics = await getAllTopic();
   res.json({ data: allTopics }).status(200);
 });

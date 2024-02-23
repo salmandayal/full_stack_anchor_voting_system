@@ -7,8 +7,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { VoteItem } from "./VoteItem";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-const VoteRegistry = () => {
+const VoteRegistry = ({
+  fetchVoteTopics,
+  voteTopics,
+}: {
+  voteTopics: any;
+  fetchVoteTopics: () => Promise<void>;
+}) => {
   return (
     <Card className='w-[600px]'>
       <CardHeader>
@@ -16,20 +24,14 @@ const VoteRegistry = () => {
         <CardDescription>Cast vote and view vote details</CardDescription>
       </CardHeader>
       <CardContent>
-        <VoteItem
-          voteName='Top coin'
-          voteOptions={[
-            { name: "BTC", count: 5 },
-            { name: "ETH", count: 7 },
-          ]}
-        />
-        <VoteItem
-          voteName='Top coin'
-          voteOptions={[
-            { name: "BTC", count: 5 },
-            { name: "ETH", count: 7 },
-          ]}
-        />
+        {voteTopics?.map(voteTopic => (
+          <VoteItem
+            fetchVoteTopics={fetchVoteTopics}
+            key={voteTopic.topic}
+            voteName={voteTopic.topic}
+            voteOptions={voteTopic.options}
+          />
+        ))}
       </CardContent>
 
       <CardFooter></CardFooter>

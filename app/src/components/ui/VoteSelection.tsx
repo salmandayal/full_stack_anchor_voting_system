@@ -22,11 +22,16 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/components/ui/use-toast";
 import { useState } from "react";
+import axios from "axios";
 
 export function VoteSelection({
+  fetchVoteTopics,
   voteOptions,
+  voteName,
 }: {
   voteOptions: Array<{ name: string; count: number }>;
+  fetchVoteTopics: () => Promise<void>;
+  voteName: string;
 }) {
   const optionEnum = voteOptions.map(option => option.name);
   const FormSchema = z.object({
@@ -41,17 +46,23 @@ export function VoteSelection({
 
   const [open, setOpen] = useState(false);
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-
-    setOpen(false);
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      await axios.post("http://localhost:3000/api/castVote", {
+        voteTopic: voteName,
+        option: data.type,
+      });
+      await fetchVoteTopics();
+      toast({
+        title: "Vote Casted 🚀",
+        description: "You voted for " + data.type,
+      });
+      setOpen(false);
+    } catch (error) {
+      toast({
+        title: "Error, try again later",
+      });
+    }
   }
 
   return (

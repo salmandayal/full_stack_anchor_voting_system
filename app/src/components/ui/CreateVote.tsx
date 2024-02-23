@@ -11,8 +11,14 @@ import { Label } from "@/components/ui/label";
 import { Button } from "./button";
 import { MuiChipsInput } from "mui-chips-input";
 import { ChangeEvent, useState } from "react";
+import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
 
-const CreateVote = () => {
+const CreateVote = ({
+  fetchVoteTopics,
+}: {
+  fetchVoteTopics: () => Promise<void>;
+}) => {
   const [options, setOptions] = useState<Array<string>>();
   const [voteName, setVoteName] = useState<string>();
 
@@ -25,7 +31,29 @@ const CreateVote = () => {
   };
 
   const saveTopic = async () => {
-    //Do api call
+    //validations
+    if (!voteName) {
+      alert("Please enter vote name");
+      return;
+    }
+    if (!options || options.length < 2) {
+      alert("Please enter atleast 2 options");
+      return;
+    }
+
+    try {
+      //save topic
+      await axios.post("http://localhost:3000/api/createVote", {
+        voteTopic: voteName,
+        options,
+      });
+      await fetchVoteTopics();
+      toast({
+        title: "Vote Created",
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

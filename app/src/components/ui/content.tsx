@@ -1,22 +1,36 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import VoteRegistry from "./VoteRegistry";
 import CreateVote from "./CreateVote";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export function Content() {
+  const [voteTopics, setVoteTopics] = useState<
+    Array<{
+      topic: string;
+      options: {
+        name: string;
+        count: number;
+      }[];
+    }>
+  >([]);
+
+  async function fetchVoteTopics() {
+    try {
+      const res = await axios.get("http://localhost:3000/api/topics");
+      setVoteTopics(res.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchVoteTopics();
+  }, []);
+
   return (
     <div className='w-[80] justify-evenly flex flex-row mt-5 mx-auto'>
-      <VoteRegistry />
-      <CreateVote />
+      <VoteRegistry voteTopics={voteTopics} fetchVoteTopics={fetchVoteTopics} />
+      <CreateVote fetchVoteTopics={fetchVoteTopics} />
     </div>
   );
 }
