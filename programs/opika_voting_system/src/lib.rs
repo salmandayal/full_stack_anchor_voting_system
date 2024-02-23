@@ -17,7 +17,7 @@ pub mod opika_voting_system {
     ) -> Result<()> {
         let vote_topic = &mut ctx.accounts.vote_topic_account;
         vote_topic.title = title;
-        vote_topic.options = options;
+        vote_topic.options = options.clone();
         vote_topic.vote_counts = vec![0; options.len()];
         Ok(())
     }
@@ -45,33 +45,23 @@ pub mod opika_voting_system {
 #[derive(Accounts)]
 pub struct Initialize {}
 
-// pub const MAXIMUM_SIZE: usize = (32 * 2) + 1 + (9 * (1 + 1)) + (32 + 1);
-
-// #[account]
-// pub struct Game {
-//     players: [Pubkey; 2],          // (32 * 2)
-//     turn: u8,                      // 1
-//     board: [[Option<Sign>; 3]; 3], // 9 * (1 + 1) = 18
-//     state: GameState,              // 32 + 1
-// }
-
 #[derive(Accounts)]
 pub struct CreateVoteTopic<'info> {
-    #[account(init, payer = user, space = VoteTopic::LEN)]
+    #[account(init, payer = user, seeds = [b"data",user.key().as_ref()],bump, space = 8 + std::mem::size_of::<VoteTopicsRegistry>()) ]
+    pub vote_registry_account: Account<'info, VoteTopicsRegistry>,
+    #[account(init, payer = user, seeds = [b"data",user.key().as_ref()],bump, space = 8 + std::mem::size_of::<VoteTopic>())]
     pub vote_topic_account: Account<'info, VoteTopic>,
     #[account(mut)]
     pub user: Signer<'info>,
     pub system_program: Program<'info, System>,
 }
 
-// Context for casting a vote
 #[derive(Accounts)]
 pub struct CastVote<'info> {
     #[account(mut)]
     pub vote_topic_account: Account<'info, VoteTopic>,
 }
 
-// Data structure for the vote topic
 #[account]
 pub struct VoteTopic {
     pub title: String,
@@ -79,28 +69,13 @@ pub struct VoteTopic {
     pub vote_counts: Vec<u64>,
 }
 
+#[account]
+pub struct VoteTopicsRegistry {
+    pub vote_topics: [String; 10], //Max String size 100 bytes
+}
+
 #[error_code]
 pub enum ErrorCode {
     #[msg("The provided option index is invalid.")]
     InvalidOptionIndex,
-}
-
-#[derive(Accounts)]
-#[instruction(title: String, options: Vec<String>)]
-pub struct CreateUserVote<'info> {
-    #[account(init, payer = user, seeds = [b"data",user.key().as_ref()],bump, space = UserVoteStruct::LEN)]
-    pub user_vote_account: Account<'info, UserVoteStruct>,
-    #[account(mut)]
-    pub user: Signer<'info>,
-    pub system_program: Program<'info, System>,
-}
-
-#[account]
-pub struct UserVoteStruct {
-    vote_topics: Vec<String>,
-    selected_option_indices: Vec<u8>,
-}
-
-impl UserVoteStruct {
-    pub const LEN: usize = 8 + 8;
 }

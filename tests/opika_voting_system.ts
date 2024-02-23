@@ -6,11 +6,20 @@ describe("opika_voting_system", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
-  const program = anchor.workspace.OpikaVotingSystem as Program<OpikaVotingSystem>;
+  const program = anchor.workspace
+    .OpikaVotingSystem as Program<OpikaVotingSystem>;
 
   it("Is initialized!", async () => {
     // Add your test here.
     const tx = await program.methods.initialize().rpc();
     console.log("Your transaction signature", tx);
   });
+
+  it("Create Vote Topic", async () => {});
+
+  it("Cast Vote", async () => {});
+
+  it("fetch vote count for topic", async () => {});
+
+  it("fetch vote registry their votes", async () => {});
 });
