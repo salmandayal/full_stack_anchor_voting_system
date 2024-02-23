@@ -10,6 +10,7 @@ import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { clusterApiUrl } from "@solana/web3.js";
 import Header from "./components/ui/header";
 import { Content } from "./components/ui/content";
+import { Toaster } from "@/components/ui/toaster";
 
 import("@solana/wallet-adapter-react-ui/styles.css");
 
@@ -38,6 +39,7 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>{children}</WalletModalProvider>
+        <Toaster />
       </WalletProvider>
     </ConnectionProvider>
   );

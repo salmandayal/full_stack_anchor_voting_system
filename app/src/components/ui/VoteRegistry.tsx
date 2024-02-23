@@ -6,30 +6,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "./button";
+import { VoteItem } from "./VoteItem";
 
 const VoteRegistry = () => {
   return (
-    <Card className='w-[400px]'>
+    <Card className='w-[600px]'>
       <CardHeader>
         <CardTitle>Vote Registry</CardTitle>
         <CardDescription>Cast vote and view vote details</CardDescription>
       </CardHeader>
-      <CardContent className='space-y-2'>
-        <div className='space-y-1'>
-          <Label htmlFor='current'>Current password</Label>
-          <Input id='current' type='password' />
-        </div>
-        <div className='space-y-1'>
-          <Label htmlFor='new'>New password</Label>
-          <Input id='new' type='password' />
-        </div>
+      <CardContent>
+        <VoteItem
+          voteName='Top coin'
+          voteOptions={[
+            { name: "BTC", count: 5 },
+            { name: "ETH", count: 7 },
+          ]}
+        />
+        <VoteItem
+          voteName='Top coin'
+          voteOptions={[
+            { name: "BTC", count: 5 },
+            { name: "ETH", count: 7 },
+          ]}
+        />
       </CardContent>
-      <CardFooter>
-        <Button>Save password</Button>
-      </CardFooter>
+
+      <CardFooter></CardFooter>
     </Card>
   );
 };

@@ -10,13 +10,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "./button";
 import { MuiChipsInput } from "mui-chips-input";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 const CreateVote = () => {
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState<Array<string>>();
+  const [voteName, setVoteName] = useState<string>();
 
-  const handleChange = (newOptions: any) => {
+  const handleChange = (newOptions: Array<string>) => {
     setOptions(newOptions);
+  };
+
+  const onChangeVoteName = (e: ChangeEvent<HTMLInputElement>) => {
+    setVoteName(e.target.value);
+  };
+
+  const saveTopic = async () => {
+    //Do api call
   };
 
   return (
@@ -30,7 +39,12 @@ const CreateVote = () => {
       <CardContent className='space-y-2'>
         <div className='space-y-1'>
           <Label htmlFor='name'>Topic Name</Label>
-          <Input id='name' />
+          <Input
+            placeholder='Enter topic name'
+            id='name'
+            value={voteName}
+            onChange={onChangeVoteName}
+          />
         </div>
         <div className='space-y-1'>
           <Label htmlFor='username'>Options</Label>
@@ -44,7 +58,7 @@ const CreateVote = () => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button>Save Topic</Button>
+        <Button onClick={saveTopic}>Save Topic</Button>
       </CardFooter>
     </Card>
   );
