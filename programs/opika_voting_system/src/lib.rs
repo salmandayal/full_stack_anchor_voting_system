@@ -6,19 +6,19 @@ declare_id!("5MTTqsGoj5JjXeyEoA8MCSFgDN3HMjJo8q9E6oxuLatk");
 pub mod opika_voting_system {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        Ok(())
-    }
-
     pub fn create_vote_topic(
         ctx: Context<CreateVoteTopic>,
         title: String,
         options: Vec<String>,
     ) -> Result<()> {
         let vote_topic = &mut ctx.accounts.vote_topic_account;
-        vote_topic.title = title;
-        vote_topic.options = options.clone();
-        vote_topic.vote_counts = vec![0; options.len()];
+        vote_topic.title = title.clone();
+        ctx.accounts.vote_topic_account.options = options.clone();
+        ctx.accounts.vote_topic_account.vote_counts = vec![0; options.len().clone() as usize];
+        let vote_registry = &mut ctx.accounts.vote_registry_account;
+        msg!("Vote topics count: {}", vote_registry.vote_topics.len());
+        vote_registry.vote_topics.push(title.clone());
+
         Ok(())
     }
 
@@ -43,35 +43,33 @@ pub mod opika_voting_system {
 }
 
 #[derive(Accounts)]
-pub struct Initialize {}
+pub struct CastVote<'info> {
+    #[account(mut)]
+    pub vote_topic_account: Account<'info, VoteTopic>,
+}
 
 #[derive(Accounts)]
+#[instruction(title: String, options: Vec<String>)]
 pub struct CreateVoteTopic<'info> {
-    #[account(init, payer = user, seeds = [b"data",user.key().as_ref()],bump, space = 8 + std::mem::size_of::<VoteTopicsRegistry>()) ]
-    pub vote_registry_account: Account<'info, VoteTopicsRegistry>,
-    #[account(init, payer = user, seeds = [b"data",user.key().as_ref()],bump, space = 8 + std::mem::size_of::<VoteTopic>())]
+    #[account(init_if_needed, payer = user, seeds = [b"vote_registry".as_ref()],bump, space = 8 + std::mem::size_of::<VoteTopicsRegistry>()+ 1000) ]
+    pub vote_registry_account: Box<Account<'info, VoteTopicsRegistry>>,
+    #[account(init, payer = user, seeds = [&title.as_bytes()],bump, space = 8 + std::mem::size_of::<VoteTopic>() + 2000)]
     pub vote_topic_account: Account<'info, VoteTopic>,
     #[account(mut)]
     pub user: Signer<'info>,
     pub system_program: Program<'info, System>,
 }
 
-#[derive(Accounts)]
-pub struct CastVote<'info> {
-    #[account(mut)]
-    pub vote_topic_account: Account<'info, VoteTopic>,
+#[account]
+pub struct VoteTopicsRegistry {
+    pub vote_topics: Vec<String>,
 }
 
 #[account]
 pub struct VoteTopic {
     pub title: String,
-    pub options: Vec<String>,
     pub vote_counts: Vec<u64>,
-}
-
-#[account]
-pub struct VoteTopicsRegistry {
-    pub vote_topics: [String; 10], //Max String size 100 bytes
+    pub options: Vec<String>,
 }
 
 #[error_code]
