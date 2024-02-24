@@ -31,15 +31,6 @@ pub mod opika_voting_system {
         }
         Ok(())
     }
-
-    pub fn get_vote_count(ctx: Context<CastVote>, option_index: u8) -> Result<u64> {
-        let vote_topic = &ctx.accounts.vote_topic_account;
-        if (option_index as usize) < vote_topic.options.len() {
-            Ok(vote_topic.vote_counts[option_index as usize])
-        } else {
-            Err(error!(ErrorCode::InvalidOptionIndex))
-        }
-    }
 }
 
 #[derive(Accounts)]

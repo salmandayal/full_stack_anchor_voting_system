@@ -36,7 +36,7 @@ describe("opika_voting_system", () => {
       .catch(e => console.log("Test error:", e));
 
     await program.methods
-      .createVoteTopic("favt team", ["Pak", "Ind"])
+      .createVoteTopic("favt team", ["US", "China"])
       .accounts({
         voteTopicAccount: voteAccount2,
         voteRegistryAccount: voteRegistry,
@@ -51,16 +51,35 @@ describe("opika_voting_system", () => {
     const tx2 = await program.account.voteTopic.fetch(voteAccount2);
 
     vtr = await program.account.voteTopicsRegistry.fetch(voteRegistry);
-    //Testcase for tx.title == "rana"
-    console.log(tx);
-    console.log(vtr);
-    console.log(tx2);
-    console.log(vtr);
+
+    expect(tx.title).to.equal("favt coin");
+    expect(tx2.title).to.equal("favt team");
+    expect(vtr.voteTopics.length).to.equal(2);
 
     // expect(tx.title).to.equal("salman");
   });
 
-  // it("Cast Vote", async () => {});
+  it("Cast Vote", async () => {
+    const [voteAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("favt coin")],
+      program.programId
+    );
 
-  // it("fetch vote count for topic", async () => {});
+    await program.methods
+      .castVote(0)
+      .accounts({
+        voteTopicAccount: voteAccount,
+      })
+      .rpc();
+
+    await program.methods
+      .castVote(0)
+      .accounts({
+        voteTopicAccount: voteAccount,
+      })
+      .rpc();
+
+    const tx = await program.account.voteTopic.fetch(voteAccount);
+    expect(tx.voteCounts[0].toNumber()).to.equal(2);
+  });
 });
