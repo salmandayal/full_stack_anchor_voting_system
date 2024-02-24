@@ -11,7 +11,7 @@ opika_voting_system = "5MTTqsGoj5JjXeyEoA8MCSFgDN3HMjJo8q9E6oxuLatk"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "Devnet"
 # wallet = "/Users/apple/.config/solana/id.json"
 wallet = "scripts/main_wallet.json"
 

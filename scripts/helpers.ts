@@ -1,6 +1,10 @@
-import anchor from "@coral-xyz/anchor";
+import anchor, {
+  AnchorProvider,
+  Program,
+  setProvider,
+} from "@coral-xyz/anchor";
 import { OpikaVotingSystem } from "../target/types/opika_voting_system";
-import { Keypair } from "@solana/web3.js";
+import { Connection, Keypair, clusterApiUrl } from "@solana/web3.js";
 
 export function loadWalletKey(keypainFile) {
   const fs = require("fs");
@@ -14,12 +18,15 @@ export function loadWalletKey(keypainFile) {
   return loaded;
 }
 
-const getAllVoteTopics = async programId => {
-  let [registryAddressAddress] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from("vote_registry"), programId],
-    programId
-  );
+const createVoteTopic = async (programId, title, options) => {
+  const wallet = loadWalletKey("main_wallet.json");
+  const connection = new Connection(clusterApiUrl("devnet"));
+  const provider = new AnchorProvider(connection, wallet, {});
+  setProvider(provider);
+  const program = new Program();
+};
 
+const getAllVoteTopics = async programId => {
   //Get account data
   // loop through the accounts
   // get the account data

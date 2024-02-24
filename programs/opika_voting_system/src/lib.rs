@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("5MTTqsGoj5JjXeyEoA8MCSFgDN3HMjJo8q9E6oxuLatk");
+declare_id!("5FNAvGjh53rUH2cNJps5CqYmTeuBNAv8m6zaKLqFoA3m");
 
 #[program]
 pub mod opika_voting_system {
