@@ -2,7 +2,8 @@
     "scripts": {
         "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
         "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
-        "dev": "concurrently \"nodemon server.js\" \"npm run app:dev\"",
+        "server": "nodemon server.ts",
+        "dev": "concurrently \"nodemon server.ts\" \"npm run app:dev\"",
         "app:dev": "cd app && npm run dev"
     },
     "dependencies": {

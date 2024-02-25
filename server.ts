@@ -1,18 +1,16 @@
-const express = require("express");
+import express from "express";
+import { validationResult } from "express-validator";
 const app = express();
-const { validationResult } = require("express-validator");
-const path = require("path");
-const {
+import path from "path";
+
+import {
   getCount,
   getAllTopic,
   castVote,
   createVoteTopic,
-} = require("./services/vote");
-const {
-  validateCastVote,
-  validateCreateVote,
-} = require("./validations/voteVS");
-const cors = require("cors");
+} from "./services/vote";
+import { validateCastVote, validateCreateVote } from "./validations/voteVS";
+import cors from "cors";
 
 app.use(express.json());
 app.use(cors());

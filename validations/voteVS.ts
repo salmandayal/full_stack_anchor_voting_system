@@ -12,7 +12,4 @@ const validateCreateVote = [
   body("options.*").isString().withMessage("Option should be a string"),
 ];
 
-module.exports = {
-  validateCastVote,
-  validateCreateVote,
-};
+export { validateCastVote, validateCreateVote };

@@ -24,10 +24,13 @@ Note: It will take couple of minutes.
 At the root of the project
 ```npm run dev```
 
+App will run on
+<a>http://localhost:5173/</a>
 
 
 ### Improvements
 1. Authentication based on Wallet address
 2. Realtime vote counts
-3. Limit voting
+3. Time locked voting
+4. Specific User group voting
 
