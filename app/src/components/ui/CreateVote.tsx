@@ -23,7 +23,9 @@ const CreateVote = ({
   const [voteName, setVoteName] = useState<string>();
 
   const handleChange = (newOptions: Array<string>) => {
-    setOptions(newOptions);
+    if (newOptions.length > 4) {
+      alert("You can only add 4 options");
+    } else setOptions(newOptions);
   };
 
   const onChangeVoteName = (e: ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +44,6 @@ const CreateVote = ({
     }
 
     try {
-      //save topic
       await axios.post("http://localhost:3000/api/createVote", {
         voteTopic: voteName,
         options,

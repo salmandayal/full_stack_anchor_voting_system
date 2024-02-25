@@ -29,7 +29,12 @@ export function Content() {
 
   return (
     <div className='w-[80] justify-evenly flex flex-row mt-5 mx-auto'>
-      <VoteRegistry voteTopics={voteTopics} fetchVoteTopics={fetchVoteTopics} />
+      {voteTopics.length ? (
+        <VoteRegistry
+          voteTopics={voteTopics}
+          fetchVoteTopics={fetchVoteTopics}
+        />
+      ) : null}
       <CreateVote fetchVoteTopics={fetchVoteTopics} />
     </div>
   );

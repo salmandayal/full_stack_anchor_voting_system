@@ -10,24 +10,29 @@ export async function getCount(voteTopic) {
 
 export async function getAllTopic() {
   //Do web3
+  try {
+    const topics = await anchorHelpers.getAllVoteTopics();
+    return topics;
+  } catch (error) {
+    return [];
+  }
 
   //Get the count from the blockchain
-
-  return [
-    {
-      topic: "Trending Token",
-      options: [
-        {
-          name: "BTC",
-          count: 5,
-        },
-        {
-          name: "ETH",
-          count: 5,
-        },
-      ],
-    },
-  ];
+  // [
+  //     {
+  //       topic: "Trending Token",
+  //       options: [
+  //         {
+  //           name: "BTC",
+  //           count: 5,
+  //         },
+  //         {
+  //           name: "ETH",
+  //           count: 5,
+  //         },
+  //       ],
+  //     },
+  //   ];
 }
 
 export async function createVoteTopic(voteTopic, options) {
@@ -35,6 +40,7 @@ export async function createVoteTopic(voteTopic, options) {
     await anchorHelpers.createVoteTopic(voteTopic, options);
     return "Vote topic created successfully";
   } catch (error) {
+    console.log("Error creating vote topic", error);
     throw new Error("Error creating vote topic");
   }
 

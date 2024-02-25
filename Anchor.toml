@@ -6,6 +6,8 @@ skip-lint = false
 
 [programs.localnet]
 opika_voting_system = "5MTTqsGoj5JjXeyEoA8MCSFgDN3HMjJo8q9E6oxuLatk"
+[programs.devnet]
+opika_voting_system = "5FNAvGjh53rUH2cNJps5CqYmTeuBNAv8m6zaKLqFoA3m"
 
 [registry]
 url = "https://api.apr.dev"

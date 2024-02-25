@@ -1,20 +1,24 @@
 import anchor, {
   AnchorProvider,
   Program,
+  Wallet,
   setProvider,
 } from "@coral-xyz/anchor";
 import { Connection, Keypair, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { IDL, OpikaVotingSystem } from "./Idl/opika_voting_system";
+import fs from "fs";
+import path from "path";
 
 const PROGRAM_ID = "5FNAvGjh53rUH2cNJps5CqYmTeuBNAv8m6zaKLqFoA3m";
 
 function loadWalletKey(keypainFile) {
-  const fs = require("fs");
-  const path = require("path");
-
   const loaded = Keypair.fromSecretKey(
-    new Uint8Array(
-      JSON.parse(fs.readFileSync(path.join(__dirname, keypainFile)).toString())
+    Buffer.from(
+      JSON.parse(
+        fs.readFileSync(path.join(__dirname, keypainFile), {
+          encoding: "utf-8",
+        })
+      )
     )
   );
   return loaded;
@@ -22,20 +26,24 @@ function loadWalletKey(keypainFile) {
 
 const getProgram = () => {
   const keypair = loadWalletKey("main_wallet.json");
-  console.log(keypair);
 
-  const wallet = new anchor.Wallet(keypair);
-
+  const wallet = new Wallet(keypair);
   const connection = new Connection(clusterApiUrl("devnet"));
-  const provider = new AnchorProvider(connection, wallet, {});
+  const provider = new AnchorProvider(connection, wallet, {
+    commitment: "finalized",
+  });
   setProvider(provider);
-  const program = new Program<OpikaVotingSystem>(IDL, PROGRAM_ID, provider);
+  const program = new Program<OpikaVotingSystem>(
+    IDL,
+    new PublicKey(PROGRAM_ID),
+    provider
+  );
 
   return program;
 };
 
 const getVoteTopicRegistryAccount = () => {
-  const [voteRegistry] = anchor.web3.PublicKey.findProgramAddressSync(
+  const [voteRegistry] = PublicKey.findProgramAddressSync(
     [Buffer.from("vote_registry")],
     new PublicKey(PROGRAM_ID)
   );
@@ -43,7 +51,7 @@ const getVoteTopicRegistryAccount = () => {
 };
 
 const getVoteTopicAccount = (title: string) => {
-  const [voteTopicAccount] = anchor.web3.PublicKey.findProgramAddressSync(
+  const [voteTopicAccount] = PublicKey.findProgramAddressSync(
     [Buffer.from(title)],
     new PublicKey(PROGRAM_ID)
   );
@@ -53,8 +61,8 @@ const getVoteTopicAccount = (title: string) => {
 const createVoteTopic = async (title: string, options: Array<string>) => {
   const program = getProgram();
 
-  await program.methods
-    .createVoteTopic(title, options)
+  return program.methods
+    .createVoteTopic("Favt Coin", ["BTC", "ETH"])
     .accounts({
       voteTopicAccount: getVoteTopicAccount(title),
       voteRegistryAccount: getVoteTopicRegistryAccount(),
