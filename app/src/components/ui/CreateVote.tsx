@@ -13,6 +13,7 @@ import { MuiChipsInput } from "mui-chips-input";
 import { ChangeEvent, useState } from "react";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 
 const CreateVote = ({
   fetchVoteTopics,
@@ -21,6 +22,7 @@ const CreateVote = ({
 }) => {
   const [options, setOptions] = useState<Array<string>>();
   const [voteName, setVoteName] = useState<string>();
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (newOptions: Array<string>) => {
     if (newOptions.length > 4) {
@@ -42,7 +44,7 @@ const CreateVote = ({
       alert("Please enter atleast 2 options");
       return;
     }
-
+    setLoading(true);
     try {
       await axios.post("http://localhost:3000/api/createVote", {
         voteTopic: voteName,
@@ -54,11 +56,13 @@ const CreateVote = ({
       });
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Card className='w-[400px]'>
+    <Card className='w-[400px] h-[350px]'>
       <CardHeader>
         <CardTitle>Add Vote topic</CardTitle>
         <CardDescription>
@@ -87,7 +91,14 @@ const CreateVote = ({
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={saveTopic}>Save Topic</Button>
+        {!loading ? (
+          <Button onClick={saveTopic}>Save Topic</Button>
+        ) : (
+          <Button disabled>
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+            Please wait
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

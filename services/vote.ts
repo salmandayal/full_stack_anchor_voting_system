@@ -14,25 +14,9 @@ export async function getAllTopic() {
     const topics = await anchorHelpers.getAllVoteTopics();
     return topics;
   } catch (error) {
+    console.log("Vote topic registry error", error);
     return [];
   }
-
-  //Get the count from the blockchain
-  // [
-  //     {
-  //       topic: "Trending Token",
-  //       options: [
-  //         {
-  //           name: "BTC",
-  //           count: 5,
-  //         },
-  //         {
-  //           name: "ETH",
-  //           count: 5,
-  //         },
-  //       ],
-  //     },
-  //   ];
 }
 
 export async function createVoteTopic(voteTopic, options) {
@@ -50,7 +34,10 @@ export async function createVoteTopic(voteTopic, options) {
 
 export async function castVote(voteTopic, option) {
   //Do web3
-
-  //Create the vote topic on the blockchain
-  return "Vote casted successfully";
+  try {
+    await anchorHelpers.castVote(voteTopic, option);
+  } catch (error) {
+    console.log("Error casting vote", error);
+    throw new Error("Error casting vote");
+  }
 }

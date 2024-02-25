@@ -10,7 +10,6 @@ import fs from "fs";
 import path from "path";
 
 const PROGRAM_ID = "5FNAvGjh53rUH2cNJps5CqYmTeuBNAv8m6zaKLqFoA3m";
-
 function loadWalletKey(keypainFile) {
   const loaded = Keypair.fromSecretKey(
     Buffer.from(
@@ -62,7 +61,7 @@ const createVoteTopic = async (title: string, options: Array<string>) => {
   const program = getProgram();
 
   return program.methods
-    .createVoteTopic("Favt Coin", ["BTC", "ETH"])
+    .createVoteTopic(title, options)
     .accounts({
       voteTopicAccount: getVoteTopicAccount(title),
       voteRegistryAccount: getVoteTopicRegistryAccount(),
@@ -77,10 +76,23 @@ const getAllVoteTopics = async () => {
   const voteRegistryData = await program.account.voteTopicsRegistry.fetch(
     voteRegistry
   );
-  const topics = voteRegistryData.voteTopics.map(async topic => {
-    const voteTopic = await program.account.voteTopic.fetch(topic);
-    return voteTopic;
-  });
+
+  let topics = [];
+  for (let index = 0; index < voteRegistryData.voteTopics.length; index++) {
+    const topic = voteRegistryData.voteTopics[index];
+    const voteTopicAccount = getVoteTopicAccount(topic);
+    const voteTopic = await program.account.voteTopic.fetch(voteTopicAccount);
+    topics.push({
+      topic: voteTopic.title,
+      options: voteTopic.options.map((option, index) => {
+        return {
+          name: option,
+          count: voteTopic.voteCounts[index].toNumber(),
+        };
+      }),
+    });
+  }
+
   return topics;
 };
 

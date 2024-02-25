@@ -23,6 +23,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 
 export function VoteSelection({
   fetchVoteTopics,
@@ -45,8 +46,10 @@ export function VoteSelection({
   });
 
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    setLoading(true);
     try {
       await axios.post("http://localhost:3000/api/castVote", {
         voteTopic: voteName,
@@ -62,6 +65,8 @@ export function VoteSelection({
       toast({
         title: "Error, try again later",
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -111,7 +116,14 @@ export function VoteSelection({
                 </FormItem>
               )}
             />
-            <Button type='submit'>Submit</Button>
+            {!loading ? (
+              <Button type='submit'>Submit</Button>
+            ) : (
+              <Button disabled>
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                Please wait
+              </Button>
+            )}
           </form>
         </Form>
       </DialogContent>
